@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>WEB-INF/spring/jdbc.properties</value>
+		</property> 
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		 <property name="driverClassName" value="${jdbc.driverClassName}" />
+		 <property name="url" value="${jdbc.url}" />
+		 <property name="username" value="${jdbc.username}" />
+		 <property name="password" value="${jdbc.password}" />
+		 <property name="initialSize" value="100" />
+		 <property name="maxActive" value="150" />
+		 <property name="maxWait" value="10000" />
+		 <property name="maxIdle" value="30" />
+		 <property name="minIdle" value="20" />
+		 <property name="testOnBorrow" value="true" />
+		 <property name="testOnReturn" value="true" />
+		 <property name="validationQuery" value="select 1 from dual" />
+		 <property name="testWhileIdle" value="true" />
+		 <property name="timeBetweenEvictionRunsMillis" value="130000" />
+		 <property name="minEvictableIdleTimeMillis" value="120000" />
+		 <property name="numTestsPerEvictionRun" value="20" />
+		 <property name="removeAbandonedTimeout" value="30" />
+		 <property name="removeAbandoned" value="true" />
+		 <property name="logAbandoned" value="false" />
+	</bean>
+	
+	<bean id="sqlMapClient"
+	    class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="dataSource" ref="dataSource"></property>
+	    <property name="configLocation" value="WEB-INF/spring/sqlConfig/sqlMapConfig.xml"></property>
+	</bean>	
+</beans>

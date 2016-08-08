@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bleSql">
+	<typeAlias alias="ble" type="com.wimds.bean.BleBean"/>
+    <typeAlias alias="wimds" type="com.wimds.bean.WimdsBean"/>
+	<select id="getBleMac_id_List"  resultClass="wimds">
+        SELECT wd_mac_id FROM wimds_device WHERE wd_stat = 0
+    </select>
+    
+    <select id="getCountAndroid_id" parameterClass="String" resultClass="int">
+    	SELECT count(*) FROM ble_list 
+    	WHERE android_id = #android_id#
+    </select>
+    
+    <update id="updateS_id" parameterClass="ble">
+    	UPDATE `ble_list` SET `s_id` = #s_id# WHERE `android_id` = #android_id# 
+    </update>
+    
+    <insert id="insertDevice" parameterClass="ble">
+    INSERT INTO `ble_list` (`b_mac_id`, `b_name`, `android_id`, `s_id`, `s_number`, `c_name`, `c_gender`, `c_etc`, `b_date`) VALUES 
+    ( #b_mac_id#, #b_name# , #android_id#, #s_id# , #s_number# , #c_name# , #c_gender# , #c_etc# , CURRENT_TIMESTAMP)
+    </insert>
+    
+    <select id="checkDevice" parameterClass="String"  resultClass="int">
+        SELECT count(*) FROM wimds_device WHERE wd_stat = 0 and wd_mac_id = #b_mac_id#
+    </select>
+    
+    <update id="updateWd_stat" parameterClass="ble">
+    	UPDATE `wimds_device` SET `wd_stat` = #b_stat# WHERE `wd_mac_id` = #b_mac_id# 
+    </update>
+    
+    <select id="getMyMac" parameterClass="String"  resultClass="ble">
+        SELECT * FROM ble_list WHERE android_id = #android_id#
+    </select>
+    
+    <delete id="deleteDevice" parameterClass="String">
+    	DELETE FROM ble_list WHERE b_mac_id = #b_mac_id#
+    </delete>
+    
+    <update id="registerLostDevice" parameterClass="String">
+    	UPDATE `ble_list` SET `b_stat` = '1' WHERE `android_id` = #android_id# 
+    </update>
+    
+    <update id="cancelLostDevice" parameterClass="String">
+    	UPDATE `ble_list` SET `b_stat` = '0' WHERE `android_id` = #android_id# 
+    </update>
+    
+    <select id="getLostDevice"  resultClass="ble">
+        SELECT * FROM ble_list WHERE b_stat = 1
+    </select>
+    
+    <update id="modifyDevice" parameterClass="ble">
+	    UPDATE `ble_list` 
+	    SET `b_name` = #b_name# , `c_name` = #c_name# , `c_gender` = #c_gender# , `c_etc` = #c_etc# WHERE `android_id` = #android_id#
+    </update>
+    
+    <insert id="findLostDevice" parameterClass="ble">
+    INSERT INTO `find_lost_device` (`android_id`, `b_mac_id`, `b_lat`, `b_lng`, `b_date`) VALUES 
+    ( #android_id#, #b_mac_id#, #b_lat#, #b_lng#, CURRENT_TIMESTAMP)
+    </insert>
+    
+    <select id="geWdtBleInfo" parameterClass="String" resultClass="ble">
+    	SELECT * FROM wimds_device WHERE wd_mac_id = #b_mac_id#
+    </select>
+    
+    <select id="getBleInfo" parameterClass="String" resultClass="ble">
+    	SELECT * FROM ble_list WHERE b_mac_id = #b_mac_id#
+    </select>
+    
+    <select id="getBleInfoForAndroid_id" parameterClass="String" resultClass="ble">
+    	SELECT * FROM ble_list WHERE android_id = #android_id#
+    </select>
+    
+    <select id="checkFindLostDevice" parameterClass="ble" resultClass="int">
+    	SELECT count(*) FROM find_lost_device WHERE android_id = #android_id# and b_mac_id = #b_mac_id#
+    </select>
+    
+    <update id="updateFindLostDevice" parameterClass="ble">
+    	UPDATE `find_lost_device` SET
+		`b_lat` = #b_lat# ,
+		`b_lng` = #b_lng# WHERE android_id = #android_id# and b_mac_id = #b_mac_id#
+    </update>
+    
+    <select id="checkLostDevice" parameterClass="String" resultClass="ble">
+    	SELECT * FROM find_lost_device WHERE b_mac_id = #b_mac_id# ORDER BY b_date DESC LIMIT 0,1
+    </select>
+    
+    <delete id="deleteFindLostDevice" parameterClass="String">
+    	DELETE FROM find_lost_device WHERE b_mac_id = #b_mac_id#
+    </delete>
+    
+</sqlMap>
